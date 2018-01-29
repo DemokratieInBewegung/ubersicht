@@ -15,7 +15,6 @@ import MPTopicLink from './MPTopicLink'
 
 const MP_URL = MP_BASE_URL + '/search.json?expanded=true&q=category:13 after:{} order:latest_topic'
 
-
 export default {
   name: 'MPNews',
   components: {
@@ -44,6 +43,7 @@ export default {
   methods: {
     refreshItems () {
       fetch(MP_URL, {
+        credentials: 'include'
         // method: "GET",
         // headers: new Headers({
         //   'Accept': 'application/json',
