@@ -34,7 +34,7 @@ export default {
       return this.selected.filter(x => x.unseen)
     },
     header () {
-      return 'Mein Marktplatz Themen'
+      return 'Meine Marktplatz Themen'
     }
   },
   methods: {

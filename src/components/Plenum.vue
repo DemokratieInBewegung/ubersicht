@@ -29,8 +29,11 @@ export default {
     refreshItems () {
       fetch(VOTING_URL, {
         method: 'GET',
+        mode: 'cors',
+        credentials: 'include',
+        cache: 'no-cache',
         headers: new Headers({
-          'Accept': 'application/json',
+          // 'Accept': 'application/json',
           'X-Requested-With': 'XMLHttpRequest'
         })}
       ).then(x => x.content.initiatives

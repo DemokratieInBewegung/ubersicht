@@ -1,5 +1,6 @@
 <template>
-  <b-card :header="header">
+  <b-card header-tag="header">
+    <card-header slot="header" title="Marktplatz News" :badge="unseen.length" />
     <ul class="list-unstyled">
       <li v-for="topic in selected" :key="topic.id">
         <MPTopicLink v-bind:topic="topic" />
@@ -12,19 +13,21 @@
 
 import { MP_BASE_URL } from '../consts.js'
 import MPTopicLink from './MPTopicLink'
+import CardHeader from './CardHeader'
 
-const MP_URL = MP_BASE_URL + '/search.json?expanded=true&q=category:13 after:{} order:latest_topic'
+const MP_URL = MP_BASE_URL + '/c/informationen-und-aktuelles.json'
 
 export default {
   name: 'MPNews',
   components: {
-    MPTopicLink
+    MPTopicLink,
+    CardHeader
   },
   mounted () {
     this.refreshItems()
   },
   data () {
-    return {items: []}
+    return {items: [], users: []}
   },
   computed: {
     selected () {
@@ -32,28 +35,18 @@ export default {
     },
     unseen () {
       return this.selected.filter(x => x.unseen)
-    },
-    header () {
-      if (this.unseen.length) {
-        return 'Marktplatz News <b-badge>' + this.unseen.legth + '</b-bade>'
-      }
-      return 'Marktplatz News'
     }
   },
   methods: {
     refreshItems () {
       fetch(MP_URL, {
         credentials: 'include'
-        // method: "GET",
-        // headers: new Headers({
-        //   'Accept': 'application/json',
-        //   'X-Requested-With': 'XMLHttpRequest'
-        // })
       }
       ).then(x => x.json()
-      ).then(x => x.topics
-      ).then(data => { this.items = data; console.log(data) }
-      )
+      ).then(x => {
+        this.items = x.topic_list.topics
+        this.users = x.users
+      })
     }
   }
 }

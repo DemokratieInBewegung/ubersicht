@@ -1,10 +1,10 @@
 <template>
-  <b-card :header="header">
+  <b-card header-tag="header">
+    <card-header slot="header" title="Marktplatz" :iconClass="iconClass" icon="bell" />
     <ul class="list-unstyled">
       <li v-for="notify in selected" :key="notify.id">
         <MPNofication v-bind:notification="notify" />
       </li>
-      <li><a :href="moreLink"></a></li>
     </ul>
   </b-card>
 </template>
@@ -14,6 +14,7 @@
 import { MP_BASE_URL } from '../consts.js'
 import MPTopicLink from './MPTopicLink'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import CardHeader from './CardHeader'
 
 const MP_URL = MP_BASE_URL + '/notifications.json?recent=true&limit=6'
 
@@ -60,7 +61,9 @@ const MPNofication = {
 export default {
   name: 'MPNotifications',
   components: {
-    MPNofication
+    MPNofication,
+    FontAwesomeIcon,
+    CardHeader
   },
   mounted () {
     this.refreshItems()
@@ -75,11 +78,11 @@ export default {
     unseen () {
       return this.selected.filter(x => x.unseen)
     },
-    header () {
-      if (this.unseen.length) {
-        return 'Marktplatz Benachrichtigungen <b-badge>' + this.unseen.legth + '</b-bade>'
+    iconClass () {
+      if (this.unseen) {
+        return 'text-primary'
       }
-      return 'Marktplatz Benachrichtigungen'
+      return 'text-muted'
     }
   },
   methods: {

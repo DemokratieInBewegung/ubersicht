@@ -9,11 +9,9 @@ import solid from '@fortawesome/fontawesome-free-solid'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-
-fontawesome.library.add(solid)
-
 Vue.use(BootstrapVue)
 Vue.config.productionTip = false
+fontawesome.library.add(solid)
 
 /* eslint-disable no-new */
 new Vue({
