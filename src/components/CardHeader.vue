@@ -1,6 +1,7 @@
 <template>
   <span>
-    {{title}}
+    <a :href="link" v-if="link">{{title}}</a>
+    <span v-else>{{title}}</span>
     <font-awesome-icon v-if="icon" v-bind:class="iconClass" :icon="icon"/>
     <b-badge v-if="badge" pill :variant="badge-variant">{{badge}}</b-badge>
 </span>
@@ -8,12 +9,11 @@
 
 <script>
 
-import {MP_BASE_URL} from '../consts.js'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default {
   name: 'CardHeader',
-  props: ['title', 'icon', 'iconClass', 'badge', 'badge-variant'],
+  props: ['title', 'link', 'icon', 'iconClass', 'badge', 'badge-variant'],
   components: {
     FontAwesomeIcon
   }

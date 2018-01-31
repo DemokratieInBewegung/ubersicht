@@ -1,6 +1,6 @@
 <template>
   <b-card header-tag="header">
-    <card-header slot="header" title="Marktplatz News" :badge="unseen.length" />
+    <card-header slot="header" :title="headerTitle" :link="catLink" :badge="unseen.length" />
     <ul class="list-unstyled">
       <li v-for="topic in selected" :key="topic.id">
         <MPTopicLink v-bind:topic="topic" />
@@ -15,10 +15,9 @@ import { MP_BASE_URL } from '../consts.js'
 import MPTopicLink from './MPTopicLink'
 import CardHeader from './CardHeader'
 
-const MP_URL = MP_BASE_URL + '/c/informationen-und-aktuelles.json'
-
 export default {
-  name: 'MPNews',
+  name: 'MPCategory',
+  props: ['cat', 'title', 'allCats'],
   components: {
     MPTopicLink,
     CardHeader
@@ -33,13 +32,22 @@ export default {
     selected () {
       return this.items.slice(0, 10)
     },
+    headerTitle () {
+      return this.title || this.cat.name
+    },
     unseen () {
       return this.selected.filter(x => x.unseen)
+    },
+    catLink () {
+      if (this.cat.parent_category_id) {
+        return `${MP_BASE_URL}/c/${this.allCats[this.cat.parent_category_id].slug}/${this.cat.slug}`
+      }
+      return `${MP_BASE_URL}/c/${this.cat.slug}`
     }
   },
   methods: {
     refreshItems () {
-      fetch(MP_URL, {
+      fetch(this.catLink + '.json', {
         credentials: 'include'
       }
       ).then(x => x.json()

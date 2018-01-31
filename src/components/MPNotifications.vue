@@ -40,7 +40,7 @@ const MPNofication = {
       } else if (typ === 3) {
         return 'questionmark'
       } else if (typ === 2) {
-        return 'questionmark'
+        return 'reply'
       } else if (typ === 1) {
         return 'at'
       }
@@ -97,7 +97,7 @@ export default {
       }
       ).then(x => x.json()
       ).then(x => x.notifications
-      ).then(data => { this.items = data; console.log(data) }
+      ).then(data => { this.items = data }
       )
     }
   }
