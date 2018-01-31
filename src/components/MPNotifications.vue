@@ -79,13 +79,13 @@ export default {
       return this.selected.filter(x => x.unseen)
     },
     icon () {
-      if (this.unseen) {
+      if (this.unseen.length) {
         return 'bell'
       }
       return ['far', 'bell']
     },
     iconClass () {
-      if (this.unseen) {
+      if (this.unseen.length) {
         return 'text-primary'
       }
       return 'text-muted'

@@ -1,14 +1,11 @@
 <template>
-  <b-card header-tag="header" footer-tag="footer">
-    <card-header slot="header" :title="headerTitle" :link="catLink" :badge="unseen.length" />
+  <b-card>
+    <card-header slot="header" title="PN Eingang" :link="link" :badge="unseen.length" />
     <ul class="list-unstyled">
       <li v-for="topic in selected" :key="topic.id">
         <MPTopicLink v-bind:topic="topic" />
       </li>
     </ul>
-    <div v-if="cat.subcats" slot="footer">
-      <MPCatLink badge="1" v-for="c in cat.subcats" :cat="c" :key="c.id" />
-    </div>
   </b-card>
 </template>
 
@@ -16,16 +13,14 @@
 
 import { MP_BASE_URL } from '../consts.js'
 import MPTopicLink from './MPTopicLink'
-import MPCatLink from './MPCatLink'
 import CardHeader from './CardHeader'
 
 export default {
-  name: 'MPCategory',
-  props: ['cat', 'title', 'allCats'],
+  name: 'MPMessages',
+  props: ['user'],
   components: {
     MPTopicLink,
-    CardHeader,
-    MPCatLink
+    CardHeader
   },
   mounted () {
     this.refreshItems()
@@ -43,16 +38,13 @@ export default {
     unseen () {
       return this.selected.filter(x => x.unseen)
     },
-    catLink () {
-      if (this.cat.parent_category_id) {
-        return `${MP_BASE_URL}/c/${this.allCats[this.cat.parent_category_id].slug}/${this.cat.slug}`
-      }
-      return `${MP_BASE_URL}/c/${this.cat.slug}`
+    link () {
+      return `${MP_BASE_URL}/u/${this.user.username}/messages`
     }
   },
   methods: {
     refreshItems () {
-      fetch(this.catLink + '.json', {
+      fetch(`${MP_BASE_URL}/topics/private-messages/${this.user.username}.json`, {
         credentials: 'include'
       }
       ).then(x => x.json()

@@ -41,6 +41,7 @@
             </b-card-group>
         </b-col>
         <b-col class="my-3">
+          <MPMessages v-if="session" :user="session" />
           <MPCategory title="Marktplatz News" :cat="news_category" />
           <b-card class="mt-3">
             <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fdemokratiebewegen%2F&tabs=timeline&height=500&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=false" width="340" height="500" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
@@ -58,6 +59,7 @@ import Plenum from './components/Plenum'
 import MPCategory from './components/MPCategory'
 import MPMine from './components/MPMine'
 import MPThemen from './components/MPThemen'
+import MPMessages from './components/MPMessages'
 import MPNotifications from './components/MPNotifications'
 
 export default {
@@ -68,6 +70,7 @@ export default {
     MPCategory,
     MPMine,
     MPThemen,
+    MPMessages,
     MPNotifications
   },
   mounted () {
