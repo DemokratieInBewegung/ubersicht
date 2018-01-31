@@ -39,9 +39,9 @@
               <MPCategory v-for="c in my_categories" :cat="c" :allCats="all_categories" :key="c.id" />
             </b-card-group>
         </b-col>
-        <b-col>
+        <b-col class="my-3">
           <MPCategory title="Marktplatz News" :cat="news_category" />
-          <b-card>
+          <b-card class="mt-3">
             <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fdemokratiebewegen%2F&tabs=timeline&height=500&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=false" width="340" height="500" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
           </b-card>
         </b-col>
@@ -71,7 +71,7 @@ export default {
     this.refreshMPInfo()
   },
   data () {
-    return { 'mp_info': [], 'loading': true, 'session': {} }
+    return { 'mp_info': [], 'all_categories': {}, 'loading': true, 'session': {} }
   },
   computed: {
     my_categories () {
@@ -79,11 +79,6 @@ export default {
     },
     news_category () {
       return this.mp_info.categories.find(x => x.id === 13)
-    },
-    all_categories () {
-      let map = {}
-      this.mp_info.categories.forEach((x) => { map[x.id] = x })
-      return map
     },
     currentUserAvatar () {
       return MP_BASE_URL + this.session.avatar_template.replace("{size}", "45")
@@ -100,8 +95,24 @@ export default {
         credentials: 'include',
         cache: 'no-cache'
       }).then(x => x.json()
-      ).then(data => { this.mp_info = data; this.loading = false }
-      )
+      ).then(mp_info => {
+        const map = {}
+        mp_info.categories.forEach((x) => {
+          x.subcats = []
+          map[x.id] = x 
+        })
+        mp_info.categories.forEach((x) => {
+          if (x.parent_category_id) {
+            map[x.parent_category_id].subcats.push(x)
+            x.parent = map[x.parent_category_id]
+          }
+        })
+
+        this.mp_info = mp_info
+        this.all_categories = map
+        this.loading = false
+
+      })
 
       fetch(MP_BASE_URL + '/session/current.json', {
         method: 'GET',

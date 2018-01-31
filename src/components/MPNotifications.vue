@@ -83,7 +83,6 @@ export default {
         return 'bell'
       }
       return ['far', 'bell']
-
     },
     iconClass () {
       if (this.unseen) {

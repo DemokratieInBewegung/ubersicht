@@ -1,11 +1,14 @@
 <template>
-  <b-card header-tag="header">
+  <b-card header-tag="header" footer-tag="footer">
     <card-header slot="header" :title="headerTitle" :link="catLink" :badge="unseen.length" />
     <ul class="list-unstyled">
       <li v-for="topic in selected" :key="topic.id">
         <MPTopicLink v-bind:topic="topic" />
       </li>
     </ul>
+    <card-footer v-if="cat.subcats" slot="footer">
+      <MPCatLink v-for="c in cat.subcats" :cat="c" :key="c.id" />
+    </card-footer>
   </b-card>
 </template>
 
@@ -13,6 +16,7 @@
 
 import { MP_BASE_URL } from '../consts.js'
 import MPTopicLink from './MPTopicLink'
+import MPCatLink from './MPCatLink'
 import CardHeader from './CardHeader'
 
 export default {
@@ -20,7 +24,8 @@ export default {
   props: ['cat', 'title', 'allCats'],
   components: {
     MPTopicLink,
-    CardHeader
+    CardHeader,
+    MPCatLink
   },
   mounted () {
     this.refreshItems()
