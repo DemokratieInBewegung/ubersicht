@@ -1,5 +1,5 @@
 <template>
-  <b-card title="Plenum">
+  <b-card header="Plenum">
     <Initiative v-bind:ini="item" v-for="item in items" v-bind:key="item.id" />
   </b-card>
 </template>
