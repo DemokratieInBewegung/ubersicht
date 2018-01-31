@@ -1,27 +1,30 @@
 <template>
   <b-card header-tag="header" footer-tag="footer">
-    <card-header slot="header" title="Themenkreise" :link="catLink" :badge="unseen.length" />
+    <card-header slot="header" :title="headerTitle" :link="catLink" :badge="unseen.length" />
+    <ul class="list-unstyled list-inline" v-if="cat.subcats">
+      <li class="list-inline-item" v-for="c in kreise"  :key="c.id">
+        <MPCatLink badge="1" :cat="c" />
+      </li>
+    </ul>
+    <span class="text-uppercase">Werden diskutiert</span>
     <ul class="list-unstyled">
       <li v-for="topic in selected" :key="topic.id">
         <MPTopicLink v-bind:topic="topic" />
       </li>
     </ul>
-    <div v-if="cat.subcats" slot="footer">
-      <MPCatLink badge="1" v-for="c in cat.subcats" :cat="c" :key="c.id" />
-    </div>
   </b-card>
 </template>
 
 <script>
 
-import { MP_BASE_URL } from '../consts.js'
+import { MP_BASE_URL, MP_THEMES_CAT_ID, MP_THEMES_NEW_CAT_ID } from '../consts.js'
 import MPTopicLink from './MPTopicLink'
 import MPCatLink from './MPCatLink'
 import CardHeader from './CardHeader'
 
 export default {
-  name: 'MPCategory',
-  props: ['cat', 'title', 'allCats'],
+  name: 'MPThemen',
+  props: ['allCats'],
   components: {
     MPTopicLink,
     CardHeader,
@@ -35,24 +38,30 @@ export default {
   },
   computed: {
     selected () {
-      return this.items.slice(0, 10)
+      return this.items.filter((x) => !x.closed).slice(0, 10)
+    },
+    cat () {
+      return this.allCats[MP_THEMES_CAT_ID]
+    },
+    newCat () {
+      return this.allCats[MP_THEMES_NEW_CAT_ID]
     },
     headerTitle () {
-      return this.title || this.cat.name
+      return "Themenkreise"
+    },
+    kreise () {
+      return this.cat.subcats.filter(x => x.id !== MP_THEMES_NEW_CAT_ID)
     },
     unseen () {
       return this.selected.filter(x => x.unseen)
     },
     catLink () {
-      if (this.cat.parent_category_id) {
-        return `${MP_BASE_URL}/c/${this.allCats[this.cat.parent_category_id].slug}/${this.cat.slug}`
-      }
       return `${MP_BASE_URL}/c/${this.cat.slug}`
     }
   },
   methods: {
     refreshItems () {
-      fetch(this.catLink + '.json', {
+      fetch(`${MP_BASE_URL}/c/${this.cat.slug}/${this.newCat.slug}.json`, {
         credentials: 'include'
       }
       ).then(x => x.json()

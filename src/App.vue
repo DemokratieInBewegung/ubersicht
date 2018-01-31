@@ -7,7 +7,7 @@
       <b-navbar toggleable="md" type="light" variant="faded">
         <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 
-        <b-navbar-brand href="#">Ubersicht</b-navbar-brand>
+        <b-navbar-brand><a href="https://bewegung.jetzt/">DiB</a>ubersicht</b-navbar-brand>
         <b-collapse is-nav id="nav_collapse">
 
           <b-navbar-nav>
@@ -36,6 +36,7 @@
             </b-card-group>
             <b-card-group columns>
               <MPMine />
+              <MPThemen :allCats="all_categories" />
               <MPCategory v-for="c in my_categories" :cat="c" :allCats="all_categories" :key="c.id" />
             </b-card-group>
         </b-col>
@@ -51,11 +52,12 @@
 </template>
 
 <script>
-import { MP_BASE_URL } from './consts.js'
+import { MP_BASE_URL, MP_NEWS_CAT_ID } from './consts.js'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Plenum from './components/Plenum'
 import MPCategory from './components/MPCategory'
 import MPMine from './components/MPMine'
+import MPThemen from './components/MPThemen'
 import MPNotifications from './components/MPNotifications'
 
 export default {
@@ -65,6 +67,7 @@ export default {
     Plenum,
     MPCategory,
     MPMine,
+    MPThemen,
     MPNotifications
   },
   mounted () {
@@ -78,7 +81,7 @@ export default {
       return this.mp_info.categories.filter(x => x.notification_level > 1)
     },
     news_category () {
-      return this.mp_info.categories.find(x => x.id === 13)
+      return this.mp_info.categories.find(x => x.id === MP_NEWS_CAT_ID)
     },
     currentUserAvatar () {
       return MP_BASE_URL + this.session.avatar_template.replace("{size}", "45")

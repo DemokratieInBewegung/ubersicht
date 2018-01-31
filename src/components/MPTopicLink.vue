@@ -2,7 +2,7 @@
   <span>
     <font-awesome-icon class="text-secondary" icon="lock" v-if="topic.closed" />
     <a v-bind:href="link" v-bind:class="klasses">
-    {{topic.fancy_title}}
+    {{topic.title || topic.fancy_title}}
     <span v-if="topic.unread" title="ungelese Antworten" class="badge badge-pill badge-primary">{{topic.unread}}</span>
   </a>
     <span v-if="topic.tags"><br />
