@@ -4,20 +4,40 @@
       loading
     </span>
     <b-container v-else fluid>
+      <b-navbar toggleable="md" type="light" variant="faded">
+        <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+
+        <b-navbar-brand href="#">Ubersicht</b-navbar-brand>
+        <b-collapse is-nav id="nav_collapse">
+
+          <b-navbar-nav>
+            <b-nav-item href="https://abstimmen.bewegung.jetzt"><font-awesome-icon icon="tasks" /> Plenum</b-nav-item>
+            <b-nav-item href="https://marktplatz.bewegung.jetzt"><font-awesome-icon icon="shopping-basket" /> Marktplatz</b-nav-item>
+            <b-nav-item href="https://chat.bewegung.jetzt"><font-awesome-icon :icon="['far', 'comments']" /> Mattermost</b-nav-item>
+            <b-nav-item href="https://wolke.bewegung.jetzt"><font-awesome-icon icon="cloud"/> Wolke</b-nav-item>
+            <b-nav-item href="https://mail.bewegung.jetzt/SOGo"><font-awesome-icon :icon="['far', 'envelope']"/> E-Mail</b-nav-item>
+          </b-navbar-nav>
+
+          <!-- Right aligned nav items -->
+          <b-navbar-nav class="ml-auto">
+            <a v-if="session.username" :href="currentUserLink">
+              <b-img  :src="currentUserAvatar" rounded="circle"  width="40" height="40" blank-color="#777" alt="Dein avatar auf dem Marktplatz" />
+            </a>
+            <b-img v-else rounded="circle" blank width="40" height="40" blank-color="#777" alt="Bitte melde dich auf dem Marktplatz an!" class="m-1" />
+          </b-navbar-nav>
+
+        </b-collapse>
+      </b-navbar>
       <b-row>
         <b-col cols="8">
-          <b-row>
-            <b-card-group>
+            <b-card-group class="my-3" deck>
               <Plenum />
               <MPNotifications />
             </b-card-group>
-          </b-row>
-          <b-row>
             <b-card-group columns>
               <MPMine />
               <MPCategory v-for="c in my_categories" :cat="c" :allCats="all_categories" :key="c.id" />
             </b-card-group>
-          </b-row>
         </b-col>
         <b-col>
           <MPCategory title="Marktplatz News" :cat="news_category" />
@@ -32,6 +52,7 @@
 
 <script>
 import { MP_BASE_URL } from './consts.js'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Plenum from './components/Plenum'
 import MPCategory from './components/MPCategory'
 import MPMine from './components/MPMine'
@@ -40,6 +61,7 @@ import MPNotifications from './components/MPNotifications'
 export default {
   name: 'App',
   components: {
+    FontAwesomeIcon,
     Plenum,
     MPCategory,
     MPMine,
@@ -62,6 +84,12 @@ export default {
       let map = {}
       this.mp_info.categories.forEach((x) => { map[x.id] = x })
       return map
+    },
+    currentUserAvatar () {
+      return MP_BASE_URL + this.session.avatar_template.replace("{size}", "45")
+    },
+    currentUserLink () {
+      return `${MP_BASE_URL}/u/${this.session.username}`
     }
   },
   methods: {
@@ -73,6 +101,15 @@ export default {
         cache: 'no-cache'
       }).then(x => x.json()
       ).then(data => { this.mp_info = data; this.loading = false }
+      )
+
+      fetch(MP_BASE_URL + '/session/current.json', {
+        method: 'GET',
+        mode: 'cors',
+        credentials: 'include',
+        cache: 'no-cache'
+      }).then(x => x.json()
+      ).then(data => { this.session = data.current_user }
       )
     }
   }

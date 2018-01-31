@@ -1,6 +1,6 @@
 <template>
   <b-card header-tag="header">
-    <card-header slot="header" title="Marktplatz" :iconClass="iconClass" icon="bell" />
+    <card-header slot="header" title="Marktplatz" :iconClass="iconClass" :icon="icon" />
     <ul class="list-unstyled">
       <li v-for="notify in selected" :key="notify.id">
         <MPNofication v-bind:notification="notify" />
@@ -32,7 +32,7 @@ const MPNofication = {
     icon () {
       const typ = this.notification.notification_type
       if (typ === 6) {
-        return 'envelope'
+        return ['far', 'envelope']
       } else if (typ === 5) {
         return 'heart'
       } else if (typ === 4) {
@@ -77,6 +77,13 @@ export default {
     },
     unseen () {
       return this.selected.filter(x => x.unseen)
+    },
+    icon () {
+      if (this.unseen) {
+        return 'bell'
+      }
+      return ['far', 'bell']
+
     },
     iconClass () {
       if (this.unseen) {
